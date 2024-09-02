@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input[type="text"] { width: 300px; padding: 10px; }
+        button { padding: 10px 20px; }
+        .results { margin-top: 20px; }
+        .result-item { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; white-space: pre-wrap; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+</head>
+<body>
+
+    <h1>Search XML Data</h1>
+    <input type="text" id="searchQuery" placeholder="Enter GUID, Name, or other text">
+    <button onclick="performSearch()">Search</button>
+
+    <div class="results" id="results"></div>
+
+    <script src="search.js"></script>
+</body>
+</html>
