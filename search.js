@@ -16,39 +16,33 @@
 /* Global */
 
 function resultDisplay(results) {
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = results;
+	const resultsDiv = document.getElementById("results");
+	resultsDiv.innerHTML = results;
 }
 
-function formatXml(xml, tab) { // tab = optional indent value, default is tab (\t)
-    var formatted = '', indent= '';
-    tab = tab || '\t';
-    xml.split(/>\s*</).forEach(function(node) {
-        if (node.match( /^\/\w/ )) indent = indent.substring(tab.length); // decrease indent by one 'tab'
-        formatted += indent + '<' + node + '>\r\n';
-        if (node.match( /^<?\w[^>]*[^\/]$/ )) indent += tab;              // increase indent
-    });
-    return formatted.substring(1, formatted.length-3);
-    const options = {
-        processEntities:false,
-        format: true,
-        ignoreAttributes: false,
-        cdataPropName: "phone"
-    };
-    const builder = new fxparser.XMLBuilder(options);
-    const chars = builder.build(xml);
+function formatXml(xml) {
+	console.log("formatting");
+	console.log("xml");
+	const options = {
+		processEntities: false,
+		format: true,
+		ignoreAttributes: false
+	};
+	const builder = new fxp.XMLBuilder(options);
+	const chars = builder.build(xml);
+	console.log("chars", chars);
 	return chars;
 }
 
 async function getXML(file) {
-    const fString = "xml/" + file;
-    const response = await fetch(fString);
-    const buffer = await response.arrayBuffer();
-    const compressed = new Uint8Array(buffer);
-    const decompressed = pako.inflate(compressed, { to: "string" });
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(decompressed, "text/xml");
-    return xmlDoc; // Return the parsed XML document
+	const fString = "xml/" + file;
+	const response = await fetch(fString);
+	const buffer = await response.arrayBuffer();
+	const compressed = new Uint8Array(buffer);
+	const decompressed = pako.inflate(compressed, { to: "string" });
+	const parser = new DOMParser();
+	const xmlDoc = parser.parseFromString(decompressed, "text/xml");
+	return xmlDoc; // Return the parsed XML document
 }
 
 async function performTextSearch() {
@@ -58,8 +52,8 @@ async function performTextSearch() {
 	query.push(document.getElementById("textSearch").value.trim());
 	console.log("n", query[0], query[1]);
 	const _XML = await getXML(query[0]);
-    resultDisplay("Loaded data, searching for results...");
-    searchXML(_XML, query[1]);
+	resultDisplay("Loaded data, searching for results...");
+	searchXML(_XML, query[1]);
 }
 
 function performSearch() {
@@ -98,7 +92,8 @@ function searchXML(xmlDoc, query) {
 			resultsFound = true;
 			const serializer = new XMLSerializer();
 			const assetStr = serializer.serializeToString(asset);
-			displayResult(formatXml(assetStr,' '));
+			console.log(assetStr);
+			displayResult(assetStr);
 		}
 	}
 
