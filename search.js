@@ -3,13 +3,15 @@ function performSearch() {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = 'Loading data...';
 
-    fetch('xml/assets.xml.gz')
+    fetch('xml/properties.xml.gz')
         .then(response => response.arrayBuffer()) // Fetch the gzipped file as a binary array
         .then(buffer => {
             const compressed = new Uint8Array(buffer);
             const decompressed = pako.inflate(compressed, { to: 'string' }); // Use pako to decompress
+            console.log("decompressed",decompressed);
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(decompressed, "text/xml");
+            console.log(xmlDoc);
 
             // Perform the search in the decompressed XML
             searchXML(xmlDoc, query);
