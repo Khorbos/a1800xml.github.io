@@ -15,54 +15,46 @@
 	<script src=" https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js">
 	</script>
 	<!-- zlib library to unpack-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/fast-xml-parser/4.5.0/fxparser.min.js"></script>
+	<script src="scripts/fxp.min.js"></script>
 	<!-- fast-xml-parser -->
 </head>
 
 <body>
 	<div class="header">
-		<span class="bigtxt">ANNO 1800 XML Search</span>
+		<h1>ANNO 1800 XML Search</h1>
 	</div>
-	<div class="Search">
-		<div class="content">
-			<script src="search.js"></script>
-			<div class="search">
-				<input type="text" id="itemSearch" placeholder="GUID or some string for asset or template name">
-				<button type="submit" value="search" onclick="performSearch()">
-					<i class="fa-solid fa-magnifying-glass"></i>
-				</button>
-			</div>
-
-			<div class="filter-system">
-				<select id="langSearch" name="langSearch">
-					<option value="brazilian">brazilian</option>
-					<option value="chinese">chinese</option>
-					<option value="english" selected="selected">english</option><!--Default-->
-					<option value="french">french</option>
-					<option value="german">german</option>
-					<option value="italian">italian</option>
-					<option value="japanese">japanese</option>
-					<option value="korean">korean</option>
-					<option value="polish">polish</option>
-					<option value="portugese">portugese</option>
-					<option value="russian">russian</option>
-					<option value="spanish">spanish</option>
-					<option value="taiwanese">taiwanese</option>
-					<option value="all">all</option>
-				</select>
-			</div>
-			<div class="search">
-				<input type="text" id="textSearch" name="textSearch" value="" placeholder="texts search">
-				<button type="submit" value="searchtxt">
-					<i class="fa-solid fa-magnifying-glass"></i>
-				</button>
-			</div>
+	<div class="search">
+		<div class="search">
+			<input type="text" id="itemSearch" placeholder="GUID or some string for asset or template name">
+			<button type="submit" onclick="performSearch()">
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+			<select id="langSearch" name="langSearch">
+				<option value="texts_brazilian.xml.gz">brazilian</option>
+				<option value="texts_chinese.xml.gz">chinese</option>
+				<option value="texts_english.xml.gz" selected="selected">english</option><!--Default-->
+				<option value="texts_french.xml.gz">french</option>
+				<option value="texts_german.xml.gz">german</option>
+				<option value="texts_italian.xml.gz">italian</option>
+				<option value="texts_japanese.xml.gz">japanese</option>
+				<option value="texts_korean.xml.gz">korean</option>
+				<option value="texts_polish.xml.gz">polish</option>
+				<option value="texts_portugese.xml.gz">portugese</option>
+				<option value="texts_russian.xml.gz">russian</option>
+				<option value="texts_spanish.xml.gz">spanish</option>
+				<option value="texts_taiwanese.xml.gz">taiwanese</option>
+				<option value="all">all</option>
+			</select>
+			<input type="text" id="textSearch" placeholder="texts search">
+			<button type="submit" onclick="performTextSearch()">
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
 		</div>
 	</div>
 	<div class="Main">
-		<div class="results" id="results"></div>
+		<div class="results" id="results">here stuff</div>
 	</div>
-
+	<script src="search.js"></script>
 </body>
 
 </html>
