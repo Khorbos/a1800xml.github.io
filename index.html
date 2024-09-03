@@ -9,135 +9,60 @@
 
 	<link rel="icon" href="src/117_A.png" sizes="any">
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+	<link rel="stylesheet" href="style.css">
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+	<script src=" https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js">
+	</script>
 	<!-- zlib library to unpack-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/fast-xml-parser/4.5.0/fxparser.min.js"></script>
 	<!-- fast-xml-parser -->
 </head>
 
 <body>
-	<div class="container">
-		<input type="text" id="searchQuery" placeholder="Enter GUID, Name, or other text">
-		<button onclick="performSearch()">Search</button>
+	<div class="header">
+		<span class="bigtxt">ANNO 1800 XML Search</span>
+	</div>
+	<div class="Search">
+		<div class="content">
+			<script src="search.js"></script>
+			<div class="search">
+				<input type="text" id="itemSearch" placeholder="GUID or some string for asset or template name">
+				<button type="submit" value="search" onclick="performSearch()">
+					<i class="fa-solid fa-magnifying-glass"></i>
+				</button>
+			</div>
 
+			<div class="filter-system">
+				<select id="langSearch" name="langSearch">
+					<option value="brazilian">brazilian</option>
+					<option value="chinese">chinese</option>
+					<option value="english" selected="selected">english</option><!--Default-->
+					<option value="french">french</option>
+					<option value="german">german</option>
+					<option value="italian">italian</option>
+					<option value="japanese">japanese</option>
+					<option value="korean">korean</option>
+					<option value="polish">polish</option>
+					<option value="portugese">portugese</option>
+					<option value="russian">russian</option>
+					<option value="spanish">spanish</option>
+					<option value="taiwanese">taiwanese</option>
+					<option value="all">all</option>
+				</select>
+			</div>
+			<div class="search">
+				<input type="text" id="textSearch" name="textSearch" value="" placeholder="texts search">
+				<button type="submit" value="searchtxt">
+					<i class="fa-solid fa-magnifying-glass"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="Main">
 		<div class="results" id="results"></div>
+	</div>
 
-
-		<div id="snackbar">copied to the clipboard</div>
-		<!-- NAVIGATION -->
-
-		<div class="topnav" id="topnav">
-			<div class="menu">
-
-				<div class="login-container">
-					<!--<button class="button-mini-alt" onclick="toggleMode()">Toggle dark mode</button>-->
-					<span class="bigtxt">ANNO 1800 Mod Tools</span>
-				</div>
-
-			</div>
-		</div> <!-- topnav -->
-
-		<!-- MAIN -->
-
-		<div class="main" id="main">
-
-			<div id="top" class="greybox" style="position: fixed;">
-				<div class="content">
-					<script src="search.js"></script>
-					<form id="item-search" name="form" action="./" method="get" class="left" onsubmit="return getFormValues(this)">
-
-						<div class="search">
-							<button type="button" id="advanced" onclick="tip('filter-ext');showAdv();">
-								<i class="fa-solid fa-circle-chevron-down"></i>
-							</button>
-							<input type="text" id="itemSearch" name="itemSearch" value=""
-								placeholder="GUID or some string for asset or template name">
-							<button type="submit" value="search">
-								<i class="fa-solid fa-circle-chevron-down"></i>
-							</button>
-							<span onClick="tip()" class="question">
-								<i class="fa-solid fa-circle-question"></i>
-							</span>
-						</div>
-					</form>
-
-					<form id="text-search" name="form" action="./" method="get" class="right">
-						<div class="filter-system">
-							<select id="langSearch" name="langSearch">
-								<option value="brazilian">brazilian</option>
-								<option value="chinese">chinese</option>
-								<option value="english" selected="selected">english</option><!--Default-->
-								<option value="french">french</option>
-								<option value="german">german</option>
-								<option value="italian">italian</option>
-								<option value="japanese">japanese</option>
-								<option value="korean">korean</option>
-								<option value="polish">polish</option>
-								<option value="portugese">portugese</option>
-								<option value="russian">russian</option>
-								<option value="spanish">spanish</option>
-								<option value="taiwanese">taiwanese</option>
-								<option value="all">all</option>
-							</select>
-						</div>
-						<div class="search"><input type="text" id="textSearch" name="textSearch" value="" placeholder="texts search"><button
-								type="submit" value="searchtxt"><i class="fa fa-search"></i></button><span onClick="tip(2)" class="question"><i
-									class="fa fa-question-circle-o"></i></span></div>
-
-					</form>
-
-					<div id="tip" class="tip">
-						<div class="tip-info left">You can search for assets by GUID or phrase. The given string will
-							display results for template names or asset names. Two mode of searching: strict or
-							non-strict. More in <a href="\?site=faq">FAQ</a></div>
-					</div>
-					<div id="tip-2" class="tip">
-						<div class="tip-info right">Searches for text by GUID or phrase, in the selected or all
-							languages. You can use the strict / non-strict mode by checking the checkbox next to the
-							asset search field. More in <a href="\?site=faq">FAQ</a></div>
-					</div>
-					<div id="tip-filter-ext" class="tip">
-						<div class="search-advanced">
-							<form id="advanced-search" name="form" action="./" method="get" onsubmit="return getFormValues(this)">
-								<div class="filter-system">
-									<span class="title">Extended search: </span>
-									<div class="search">
-										<input type="text" name="advancedSearchKey" value="" placeholder="keyword or path">
-										<input type="text" name="advancedSearchVal" value="" placeholder="value"><button type="submit"
-											value="searchadv"><i class="fa fa-search"></i></button>
-										<button type="button" value="reset" class="button-alt" onClick="resetAdv()"><i
-												class="fa fa-refresh"></i></button>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div> <!-- greybox -->
-
-
-
-			<!-- CONTENT -->
-			<div id="container">
-				<div class="content">
-					<div class="col-left">
-						<h2>
-							<a id="toggle" onClick="javascript:toggleGroups()">Browse groups:<span class="toggle right" target="_blank">
-									<i class="fa fa-chevron-circle-down"></i></span>
-							</a>
-						</h2>
-						<div class="filter-system">
-							<label for="includeEmpty">
-								<input type="checkbox" name="includeEmpty" value="1" id="includeEmpty" onClick="toggleValue(this);">include empty
-								Templates
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
 </body>
 
 </html>
