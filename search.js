@@ -20,73 +20,49 @@ function resultDisplay(results) {
 	resultsDiv.innerHTML = results;
 }
 
-function formatXml(xml) {
-	console.log("formatting");
-	console.log("xml");
-	const options = {
-		processEntities: false,
-		format: true,
-		ignoreAttributes: false
-	};
-	const builder = new fxp.XMLBuilder(options);
-	const chars = builder.build(xml);
-	console.log("chars", chars);
-	return chars;
+function displayResult(result) {
+	const resultsDiv = document.getElementById("results");
+	resultsDiv.innerHTML = "";
+	result.map(ele => {
+		const resEle = document.createElement("div");
+		resEle.className = "result-item";
+		resEle.textContent = `<${ele.tag}>${ele.content}</${ele.tag}>`;
+		resultsDiv.appendChild(resEle);
+	});
+	/* const resultItem = document.createElement("div");
+	resultItem.className = "result-item";
+	result.map(item => console.log(item));
+	resultItem.textContent = result.map(item => `"<pre>"<${item.tag}>${item.content}</${item.tag}>"</pre>"`).join("\n");
+	//	result.map(item => `<${item.tag}>${item.content}</${item.tag}>`).join("\n");
+	resultsDiv.appendChild(resultItem);*/
 }
 
-async function getXML(file, searchText) {
-	searchText = "117";
+async function getXML(file) {
 	console.log("Fetching data...");
 	const fString = "./xml/" + file;
 	const response = await fetch(fString);
 	const buffer = await response.arrayBuffer();
 	const compressed = new Uint8Array(buffer);
 	const decompressed = pako.inflate(compressed, { to: "string" });
-	console.log("Uncompressed");
-
-    // Start a Web Worker for processing
-    const worker = new Worker('worker.js');
-    worker.postMessage({ xmlString: decompressed, searchText });
-
-    worker.onmessage = (e) => {
-        const results = e.data;
-        console.log('Matching results:', results);
-    };
-}
-
-function serializeElement(element, indentLevel) {
-	const indent = "    ".repeat(indentLevel); // 4 spaces per indent level
-	let xml = `${indent}<${element.tag}>`;
-	if (element.content.includes("<")) {
-		xml += `\n${element.content}\n${indent}`;
-	} else {
-		xml += `${element.content}`;
-	}
-	xml += `</${element.tag}>`;
-	return xml;
-}
-
-function serializeElement(element, indentLevel) {
-	const indent = "    ".repeat(indentLevel); // 4 spaces per indent level
-	let xml = `${indent}<${element.tag}>`;
-	if (element.content.includes("<")) {
-		xml += `\n${element.content}\n${indent}`;
-	} else {
-		xml += `${element.content}`;
-	}
-	xml += `</${element.tag}>`;
-	return xml;
+	return decompressed;
 }
 
 async function performTextSearch() {
 	resultDisplay("Loading data...");
-	const query = [];
-	query.push(document.getElementById("langSearch").value.trim());
-	query.push(document.getElementById("textSearch").value.trim());
-	console.log("n", query[0], query[1]);
-	const _XML = await getXML(query[0]);
+	const _XML = await getXML(document.getElementById("langSearch").value.trim());
 	resultDisplay("Loaded data, searching for results...");
-	searchXML(_XML, query[1]);
+
+	// Start a Web Worker for processing
+	const worker = new Worker("worker.js");
+	const searchText = document.getElementById("textSearch").value.trim();
+	worker.postMessage({ xmlString: _XML, searchText });
+
+	worker.onmessage = e => {
+		const results = e.data;
+		console.log("Matching results:", results);
+		console.log("type", typeof results);
+		displayResult(results);
+	};
 }
 
 function performSearch() {
@@ -113,49 +89,4 @@ function performSearch() {
 		});
 }
 
-function searchXML(xmlDoc, query) {
-	/* const assets = xmlDoc.getElementsByTagName("Text");
-	console.log(assets);
-
-	for (let asset of assets) {
-		const guid = asset.querySelector("Text > GUID")?.textContent || "";
-		const name = asset.querySelector("Text > Text")?.textContent || "";
-
-		if (guid.includes(query) || name.includes(query)) {
-			resultsFound = true;
-			const serializer = new XMLSerializer();
-			const assetStr = serializer.serializeToString(asset);
-			console.log(assetStr);
-			displayResult(assetStr);
-		}
-	}
-
-	if (!resultsFound) {
-		resultDisplay("No results found!");
-	} */
-	resultDisplay(xmlDoc);
-}
-
-function displayResult(result) {
-	const resultsDiv = document.getElementById("results");
-	const resultItem = document.createElement("div");
-	resultItem.className = "result-item";
-	resultItem.textContent = result;
-	resultsDiv.appendChild(resultItem);
-}
-
-/* 
-<script>
-		if (typeof fxp.XMLBuilder !== 'undefined') {
-			console.log('fxBuilder is loaded');
-		} else {
-			console.log('fxBuilder is not loaded');
-		}
-		if (typeof fxp.XMLParser !== 'undefined') {
-			console.log('fxparser is loaded');
-		} else {
-			console.log('fxparser is not loaded');
-		}
-	</script>
-*/
-console.log("loaded 10:40");
+console.log("loaded 20:50");
