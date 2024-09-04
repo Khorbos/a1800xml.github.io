@@ -34,15 +34,48 @@ function formatXml(xml) {
 	return chars;
 }
 
-async function getXML(file) {
-	const fString = "xml/" + file;
+async function getXML(file, searchText) {
+	searchText = "117";
+	console.log("Fetching data...");
+	const fString = "./xml/" + file;
 	const response = await fetch(fString);
 	const buffer = await response.arrayBuffer();
 	const compressed = new Uint8Array(buffer);
 	const decompressed = pako.inflate(compressed, { to: "string" });
-	const parser = new DOMParser();
-	const xmlDoc = parser.parseFromString(decompressed, "text/xml");
-	return xmlDoc; // Return the parsed XML document
+	console.log("Uncompressed");
+
+    // Start a Web Worker for processing
+    const worker = new Worker('worker.js');
+    worker.postMessage({ xmlString: decompressed, searchText });
+
+    worker.onmessage = (e) => {
+        const results = e.data;
+        console.log('Matching results:', results);
+    };
+}
+
+function serializeElement(element, indentLevel) {
+	const indent = "    ".repeat(indentLevel); // 4 spaces per indent level
+	let xml = `${indent}<${element.tag}>`;
+	if (element.content.includes("<")) {
+		xml += `\n${element.content}\n${indent}`;
+	} else {
+		xml += `${element.content}`;
+	}
+	xml += `</${element.tag}>`;
+	return xml;
+}
+
+function serializeElement(element, indentLevel) {
+	const indent = "    ".repeat(indentLevel); // 4 spaces per indent level
+	let xml = `${indent}<${element.tag}>`;
+	if (element.content.includes("<")) {
+		xml += `\n${element.content}\n${indent}`;
+	} else {
+		xml += `${element.content}`;
+	}
+	xml += `</${element.tag}>`;
+	return xml;
 }
 
 async function performTextSearch() {
@@ -81,8 +114,8 @@ function performSearch() {
 }
 
 function searchXML(xmlDoc, query) {
-	const assets = xmlDoc.getElementsByTagName("Text");
-	let resultsFound = false;
+	/* const assets = xmlDoc.getElementsByTagName("Text");
+	console.log(assets);
 
 	for (let asset of assets) {
 		const guid = asset.querySelector("Text > GUID")?.textContent || "";
@@ -99,7 +132,8 @@ function searchXML(xmlDoc, query) {
 
 	if (!resultsFound) {
 		resultDisplay("No results found!");
-	}
+	} */
+	resultDisplay(xmlDoc);
 }
 
 function displayResult(result) {
@@ -124,3 +158,4 @@ function displayResult(result) {
 		}
 	</script>
 */
+console.log("loaded 10:40");

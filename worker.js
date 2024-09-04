@@ -1,75 +1,58 @@
-importScripts('https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js');
-importScripts('https://cdnjs.cloudflare.com/ajax/libs/fast-xml-parser/4.4.1/fxparser.min.js');
-
-const parser = new XMLParser({
-    ignoreAttributes: false,
-    parseAttributeValue: true,
-    parseNodeValue: true,
-    attributeNamePrefix: '',
-    ignoreNameSpace: true
-});
-
-let indexedData = [];
-
+importScripts('https://cdn.jsdelivr.net/npm/sax@1.4.1/lib/sax.min.js');
 self.onmessage = function(e) {
-    if (e.data.action === 'indexFiles') {
-        const files = e.data.files;
-        let processedFiles = 0;
+    const { xmlString, searchText } = e.data;
+    const parser = sax.parser(true);
+    const results = [];
+    let currentTag = null;
+    let currentContent = '';
+    let stack = [];
+    let isMatchingGUID = false;
 
-        files.forEach(file => {
-            fetch(file)
-                .then(response => response.arrayBuffer())
-                .then(buffer => {
-                    const decompressed = new TextDecoder("utf-8").decode(pako.ungzip(new Uint8Array(buffer)));
-                    console.log(`Decompressed content for ${file}:`, decompressed);
+    parser.onopentag = (node) => {
+        currentTag = node.name;
+        stack.push({ tag: node.name, content: '' });
+    };
 
-                    try {
-                        const jsonObj = parser.parse(decompressed);
-                        console.log(`Parsed JSON for ${file}:`, jsonObj);
+    parser.ontext = (text) => {
+        if (currentTag) {
+            currentContent += text.trim();
+        }
+    };
 
-                        if (jsonObj && jsonObj.DataSet) {
-                            const dataSets = Array.isArray(jsonObj.DataSet) ? jsonObj.DataSet : [jsonObj.DataSet];
-                            dataSets.forEach(dataSet => {
-                                if (dataSet.Item) {
-                                    const items = Array.isArray(dataSet.Item) ? dataSet.Item : [dataSet.Item];
-                                    items.forEach(item => {
-                                        indexedData.push({
-                                            guid: item.Id || '',
-                                            name: item.Name || '',
-                                            content: JSON.stringify(item) // Serialize item to a string
-                                        });
-                                    });
-                                } else {
-                                    console.warn(`No Item data found in ${file}`);
-                                }
-                            });
-                        } else {
-                            console.warn(`No DataSet data found in ${file}`);
-                        }
-                    } catch (error) {
-                        console.error(`Error parsing XML from ${file}:`, error);
-                    }
+    parser.onclosetag = (tagName) => {
+        const element = stack.pop();
+        element.content = currentContent;
 
-                    processedFiles++;
-                    const progress = (processedFiles / files.length) * 100;
-                    self.postMessage({ action: 'progress', progress });
+        if (tagName === 'GUID' && currentContent.includes(searchText)) {
+            isMatchingGUID = true;
+        }
 
-                    if (processedFiles === files.length) {
-                        console.log('Indexing complete. Indexed data:', indexedData);
-                        self.postMessage({ action: 'indexComplete', index: indexedData });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error processing file:', file, error);
-                });
-        });
-    } else if (e.data.action === 'search') {
-        const query = e.data.query.toLowerCase();
-        const results = indexedData.filter(item => 
-            item.name.toLowerCase().includes(query) || 
-            item.content.toLowerCase().includes(query)
-        );
-        console.log(`Search results for query "${query}":`, results);
-        self.postMessage({ action: 'searchResults', results });
-    }
+        if (isMatchingGUID) {
+            if (stack.length > 0) {
+                stack[stack.length - 1].content += serializeElement(element, stack.length);
+            }
+            if (tagName === 'Text') {
+                results.push(element);
+                isMatchingGUID = false;
+            }
+        }
+
+        currentTag = null;
+        currentContent = '';
+    };
+
+    parser.write(xmlString).close();
+    self.postMessage(results);
 };
+
+function serializeElement(element, indentLevel) {
+    const indent = '    '.repeat(indentLevel);
+    let xml = `${indent}<${element.tag}>`;
+    if (element.content.includes('<')) {
+        xml += `\n${element.content}\n${indent}`;
+    } else {
+        xml += `${element.content}`;
+    }
+    xml += `</${element.tag}>`;
+    return xml;
+}
