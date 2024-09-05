@@ -8,14 +8,13 @@
 }
 
 .results {
-  display: table;
-  width: 100%;
+  width: 30%;
   border-collapse: collapse;
   /* Ensures borders don't double up */
 }
 
 .results .result-item {
-  display: table-row;
+  white-space: pre;
 }
 
 .results .result-item div {

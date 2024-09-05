@@ -15,6 +15,26 @@
 
 /* Global */
 
+function serializeElement(element, indent = 0) {
+    const indentation = '  '.repeat(indent); // Two spaces per indent level
+    let serialized = `${indentation}<${element.tag}>`; // Opening tag
+    
+    if (element.content) {
+        serialized += `${element.content}`;
+    }
+    
+    if (element.children && element.children.length > 0) {
+        serialized += `\n`; // Add line break before children
+        element.children.forEach(child => {
+            serialized += `${serializeElement(child, indent + 1)}\n`; // Recursively serialize each child
+        });
+        serialized += `${indentation}`; // Closing indentation
+    }
+    
+    serialized += `</${element.tag}>`; // Closing tag
+    return serialized;
+}
+
 function resultDisplay(results) {
 	const resultsDiv = document.getElementById("results");
 	resultsDiv.innerHTML = results;
@@ -24,9 +44,10 @@ function displayResult(result) {
 	const resultsDiv = document.getElementById("results");
 	resultsDiv.innerHTML = "";
 	result.map(ele => {
+		console.log(ele, serializeElement(ele));
 		const resEle = document.createElement("div");
 		resEle.className = "result-item";
-		resEle.textContent = `<${ele.tag}>${ele.content}</${ele.tag}>`;
+		resEle.textContent = serializeElement(ele);
 		resultsDiv.appendChild(resEle);
 	});
 	/* const resultItem = document.createElement("div");
