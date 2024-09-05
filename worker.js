@@ -1,4 +1,5 @@
 importScripts("https://cdn.jsdelivr.net/npm/sax@1.4.1/lib/sax.min.js");
+/* importScripts("scripts/sax-parser.2.0.3.js"); */
 /* Simple API for XML */
 self.onmessage = function (e) {
 	const { xmlString, searchText, parentTags } = e.data; // `parentTags` is an array of parent tag names like ['asset', 'text']
