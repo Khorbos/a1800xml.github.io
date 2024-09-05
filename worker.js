@@ -1,18 +1,17 @@
 importScripts("https://cdn.jsdelivr.net/npm/sax@1.4.1/lib/sax.min.js");
 /* Simple API for XML */
 self.onmessage = function (e) {
-	const { xmlString, searchText } = e.data;
+	const { xmlString, searchText, parentTags } = e.data; // `parentTags` is an array of parent tag names like ['asset', 'text']
 	const parser = sax.parser(true);
 	const results = [];
 	let currentTag = null;
 	let currentContent = "";
 	let stack = [];
-	let isMatchingGUID = false;
 
-	/* Definition of parserOptions */
+	// Start the parser
 	parser.onopentag = node => {
 		currentTag = node.name;
-		stack.push({ tag: node.name, children: [] });
+		stack.push({ tag: node.name, children: [], content: "" });
 	};
 
 	parser.ontext = text => {
@@ -30,26 +29,26 @@ self.onmessage = function (e) {
 			stack[stack.length - 1].children.push(element);
 		}
 
+		// Case-insensitive search for the target text
 		if (currentContent.toLowerCase().includes(searchText.toLowerCase())) {
-			isMatchingGUID = true;
-		}
-
-		if (isMatchingGUID) {
-			// Push the parent element (2 levels up) when matching the GUID
-			if (stack.length > 1) {
-				results.push(stack[stack.length - 1]);
-			} else {
-				results.push(element);
+			// Search for the nearest matching parent in the stack
+			for (let i = stack.length - 1; i >= 0; i--) {
+				if (parentTags.includes(stack[i].tag.toLowerCase())) {
+					results.push(stack[i]); // Push the matching parent tag
+					break;
+				}
 			}
-			isMatchingGUID = false; // Reset the flag after finding and pushing the result
 		}
 
+		// Reset the currentTag and content for the next element
 		currentTag = null;
 		currentContent = "";
 	};
-	/* End of parser Definitions */
 
-	parser.write(xmlString).close(); // Execute the parser
+	// Execute the parser
+	parser.write(xmlString).close();
+
+	// Send the results back to the main thread
 	self.postMessage(results);
 };
 
