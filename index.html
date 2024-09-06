@@ -9,20 +9,9 @@
 
 	<link rel="icon" href="src/117_A.png" sizes="any">
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/solid.min.css" />
-	<!-- fontawesome icons / free -->
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-	<!-- google material icons https://fonts.google.com/icons?selected=Material+Symbols+Outlined:search:FILL@0;wght@400;GRAD@0;opsz@24&icon.size=24&icon.color=%23e8eaed -->
-	<style>
-		.material-symbols-outlined {
-			font-variation-settings:
-				'FILL' 0,
-				'wght' 400,
-				'GRAD' 0,
-				'opsz' 24
-		}
-	</style>
+	<!-- google material icons https://fonts.google.com/icons -->
 	<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 	<!-- ModelViewer GLB -->
 	<link rel="stylesheet" href="style.css">
@@ -32,15 +21,16 @@
 </head>
 
 <body>
-	<div class="header">
-		<h1>ANNO 1800 XML Search</h1>
+	<div class="header" float:left>
+		<span><button class="material-symbols-outlined" onclick="console.log('home')">home</button></span>
+		<span><button class="material-symbols-outlined" onclick="console.log('search')">search</button></span>
+		<span><button class="material-symbols-outlined" onclick="console.log('stacks')">stacks</button></span>
+		<span>ANNO 1800 XML Search</span>
 	</div>
 	<div class="search">
 		<div class="search">
 			<input type="text" id="assetSearch" placeholder="GUID or some string for asset or template name">
-			<button type="submit" onclick="performAssetSearch()">
-				<i class="material-symbols-outlined">search</i>
-			</button>
+			<button type="submit" onclick="performAssetSearch()" class="material-symbols-outlined">search </button>
 			<select id="langSearch" name="langSearch">
 				<option value="texts_brazilian.xml.gz">brazilian</option>
 				<option value="texts_chinese.xml.gz">chinese</option>
@@ -51,22 +41,20 @@
 				<option value="texts_japanese.xml.gz">japanese</option>
 				<option value="texts_korean.xml.gz">korean</option>
 				<option value="texts_polish.xml.gz">polish</option>
-				<option value="texts_portugese.xml.gz">portugese</option>
+				<option value="texts_portuguese.xml.gz">portuguese</option>
 				<option value="texts_russian.xml.gz">russian</option>
 				<option value="texts_spanish.xml.gz">spanish</option>
 				<option value="texts_taiwanese.xml.gz">taiwanese</option>
-				<option value="all">all</option>
 			</select>
 			<input type="text" id="textSearch" placeholder="texts search">
-			<button type="submit" onclick="performTextSearch()">
-				<i class="fa-solid fa-magnifying-glass"></i>
-			</button>
+			<button type="submit" onclick="performTextSearch()" class="material-symbols-outlined">search</button>
 		</div>
 	</div>
 	<div class="Main">
 		<div class="results" id="results">here stuff</div>
 	</div>
-	<model-viewer alt="collier" src="3d/collier_lod0.glb" shadow-intensity="1" tone-mapping="neutral" skybox-image="3d/belfast_sunset_puresky_1k.hdr" camera-controls touch-action="pan-y"></model-viewer>
+	<!-- <model-viewer alt="collier" src="3d/collier_lod0.glb" shadow-intensity="1" tone-mapping="neutral" skybox-image="3d/belfast_sunset_puresky_1k.hdr"
+		camera-controls touch-action="pan-y"></model-viewer> -->
 	<script src="search.js"></script>
 </body>
 

@@ -43,12 +43,14 @@ function resultDisplay(results) {
 function displayResult(result) {
 	const resultsDiv = document.getElementById("results");
 	resultsDiv.innerHTML = "";
+	const test = document.createElement("div");
+	test.id = "result-short";
+	resultsDiv.appendChild(test);
 	result.map(ele => {
-		console.log(ele, serializeElement(ele));
+		console.log(typeof ele, ele, serializeElement(ele));
 		const resEle = document.createElement("div");
-		resEle.className = "result-item";
 		resEle.textContent = serializeElement(ele);
-		resultsDiv.appendChild(resEle);
+		test.appendChild(resEle);
 	});
 }
 
@@ -65,6 +67,7 @@ async function getXML(file) {
 async function performTextSearch() {
 	resultDisplay("Loading data...");
 	const _XML = await getXML(document.getElementById("langSearch").value.trim());
+
 	resultDisplay("Loaded data, searching for results...");
 
 	// Start a Web Worker for processing
@@ -76,7 +79,6 @@ async function performTextSearch() {
 	worker.onmessage = e => {
 		const results = e.data;
 		console.log("Matching results:", results);
-		console.log("type", typeof results);
 		displayResult(results);
 	};
 }

@@ -12,7 +12,7 @@ self.onmessage = function (e) {
 	// Start the parser
 	parser.onopentag = node => {
 		currentTag = node.name;
-		stack.push({ tag: node.name, children: [], content: "" });
+		stack.push({ tag: node.name, children: []});
 	};
 
 	parser.ontext = text => {
