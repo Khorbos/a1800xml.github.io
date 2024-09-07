@@ -129,14 +129,15 @@ async function fetchData(_file) {
 }
 
 /**
- * @param {string} parentTag
  * @param {string} searchFile
- * @param {boolean} strict
  * @param {string} searchString
+ * @param {string} parentTag
+ * @param {string[]} [searchTag=["GUID","Name"]]
+ * @param {boolean} strict
  * **/
 
-async function perfSearch(searchFile, parentTag, strict, searchString) {
-	console.log(searchFile, parentTag, strict, searchString);
+async function perfSearch(searchFile, searchString, searchTag = ["GUID", "Name"], parentTag, strict = true) {
+	console.log(searchFile, searchString, searchTag, parentTag, strict);
 	return 0;
 }
 
