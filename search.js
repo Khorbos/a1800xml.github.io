@@ -102,4 +102,64 @@ async function performAssetSearch() {
 	};
 }
 
-console.log("loaded 20:50");
+/* rework of functions for better stuff */
+
+/**
+ * @param {string} _file
+ * @returns {string}
+ * **/
+async function fetchData(_file) {
+	const cachedData = localStorage.getItem(_file);
+	if (cachedData) {
+		console.log("Using cached file.");
+		return cachedData;
+	} else {
+		console.log("fetching and storing data.");
+		console.log("Fetching data...");
+		const fString = "./xml/" + _file;
+		const response = await fetch(fString);
+		const buffer = await response.arrayBuffer();
+		const compressed = new Uint8Array(buffer);
+		const decompressed = pako.inflate(compressed, { to: "string" });
+		localStorage.setItem(_file, decompressed);
+		console.log("stored!");
+		return decompressed;
+	}
+	return 0;
+}
+
+/**
+ * @param {string} parentTag
+ * @param {string} searchFile
+ * @param {boolean} strict
+ * @param {string} searchString
+ * **/
+
+async function perfSearch(searchFile, parentTag, strict, searchString) {
+	console.log(searchFile, parentTag, strict, searchString);
+	return 0;
+}
+
+/* main entry for Search */
+window.addEventListener("DOMContentLoaded", function () {
+	var form = document.getElementById("search-form");
+
+	document.addEventListener(
+		"submit",
+		function (event) {
+			event.preventDefault(); // Prevent the default form submission behavior
+
+			const form = event.target; // Get the form element that triggered the submit
+
+			const formData = new FormData(form);
+			console.log(formData);
+
+			formData.forEach((value, key) => {
+				console.log(`${key}: ${value}`);
+			});
+
+			// Optionally submit the form programmatically or handle the data here
+		},
+		true
+	);
+});

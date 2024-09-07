@@ -18,43 +18,176 @@
 
 	<script src=" https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
 	<!-- zlib library to unpack-->
+
+	<!-- scripts for layout functionality -->
+	<script>
+		function toggle_dark_mode() {
+			var element = document.body;
+			element.classList.toggle("dark-mode");
+		}
+		function opensearchform(form_id) {
+			document.getElementById("form_asset_search").style.display = "none";
+			document.getElementById("form_text_search").style.display = "none";
+			document.getElementById("form_value_search").style.display = "none";
+			document.getElementById("form_waldow_search").style.display = "none";
+			document.getElementById("asset_search").classList.remove("active_search_tab");
+			document.getElementById("text_search").classList.remove("active_search_tab");
+			document.getElementById("value_search").classList.remove("active_search_tab");
+			document.getElementById("waldow_search").classList.remove("active_search_tab");
+			document.getElementById("form_" + form_id).style.display = "block";
+			document.getElementById(form_id).classList.add("active_search_tab");
+		}
+		function opendetails(tab_id) {
+			document.getElementById("detail_data").style.display = "none";
+			document.getElementById("detail_xml").style.display = "none";
+			document.getElementById("detail_txt").style.display = "none";
+			document.getElementById("detail_img").style.display = "none";
+			document.getElementById("detail_data_tab").classList.remove("active_detail_tab");
+			document.getElementById("detail_xml_tab").classList.remove("active_detail_tab");
+			document.getElementById("detail_txt_tab").classList.remove("active_detail_tab");
+			document.getElementById("detail_img_tab").classList.remove("active_detail_tab");
+			document.getElementById(tab_id).style.display = "block";
+			document.getElementById(tab_id + "_tab").classList.add("active_detail_tab");
+		}
+	</script>
 </head>
 
 <body>
-	<div class="header" float:left>
-		<span><button class="material-symbols-outlined" onclick="console.log('home')">home</button></span>
-		<span><button class="material-symbols-outlined" onclick="console.log('search')">search</button></span>
-		<span><button class="material-symbols-outlined" onclick="console.log('stacks')">stacks</button></span>
-		<span>ANNO 1800 XML Search</span>
-	</div>
-	<div class="search">
-		<div class="search">
-			<input type="text" id="assetSearch" placeholder="GUID or some string for asset or template name">
-			<button type="submit" onclick="performAssetSearch()" class="material-symbols-outlined">search </button>
-			<select id="langSearch" name="langSearch">
-				<option value="texts_brazilian.xml.gz">brazilian</option>
-				<option value="texts_chinese.xml.gz">chinese</option>
-				<option value="texts_english.xml.gz" selected="selected">english</option><!--Default-->
-				<option value="texts_french.xml.gz">french</option>
-				<option value="texts_german.xml.gz">german</option>
-				<option value="texts_italian.xml.gz">italian</option>
-				<option value="texts_japanese.xml.gz">japanese</option>
-				<option value="texts_korean.xml.gz">korean</option>
-				<option value="texts_polish.xml.gz">polish</option>
-				<option value="texts_portuguese.xml.gz">portuguese</option>
-				<option value="texts_russian.xml.gz">russian</option>
-				<option value="texts_spanish.xml.gz">spanish</option>
-				<option value="texts_taiwanese.xml.gz">taiwanese</option>
-			</select>
-			<input type="text" id="textSearch" placeholder="texts search">
-			<button type="submit" onclick="performTextSearch()" class="material-symbols-outlined">search</button>
-		</div>
-	</div>
-	<div class="Main">
-		<div class="results" id="results">here stuff</div>
-	</div>
-	<!-- <model-viewer alt="collier" src="3d/collier_lod0.glb" shadow-intensity="1" tone-mapping="neutral" skybox-image="3d/belfast_sunset_puresky_1k.hdr"
-		camera-controls touch-action="pan-y"></model-viewer> -->
+	<div id="header">
+		<div id="headbar">
+			<div id="sitname">
+				<h1>Anno 1800 XML Search</h1>
+			</div>
+			<div id="css_toggle" onclick="toggle_dark_mode()">toggle dark mode</div>
+		</div><!-- id => toolbar -->
+		<div id="searchbar">
+			<div id="search_header">
+				<div id="asset_search" class="search_tab active_search_tab" onclick="opensearchform('asset_search')">Asset_search</div>
+				<!-- id = asset_search | class => search_tab -->
+				<div id="text_search" class="search_tab" onclick="opensearchform('text_search')">Text-Search</div>
+				<!-- id = v | class => search_tab -->
+				<div id="value_search" class="search_tab" onclick="opensearchform('value_search')">Value-Search</div>
+				<!-- id = value_search | class => search_tab -->
+				<div id="waldow_search" class="search_tab" onclick="opensearchform('waldow_search')">Where-is-Waldow</div>
+				<!-- id = waldow_search | class => search_tab -->
+			</div><!-- id => search_header -->
+			<div class="search_forms">
+				<div id="form_asset_search" class="search_form" style="display: block">
+					<form id="search-form">
+						<input type="text" name="input_asset_search" placeholder="GUID or some string for asset or template name">
+						<label><input type="checkbox" name="asset_search_filter_non_strikt" id="asset_search_filter_non_strikt">Non-strikt</label>
+						<label><input type="checkbox" name="asset_search_filter_no_txt" id="asset_search_filter_no_txt">No texts/audio</label>
+						<button class="btn" id='your-id'
+							onclick="perfSearch('assets.xml.gz','asset',document.getElementById('asset_search_filter_non_strikt').value,document.getElementById('input_asset_search').value)">Search</button>
+					</form>
+				</div><!-- id => form_asset_search | class => search_form -->
+				<div id="form_text_search" class="search_form">
+					<form id="search-form">
+						<input type="text" name="input_text_search" placeholder="Enter Text you wanna search for">
+						<select id="select_lang_text_search" name="select_lang_text_search">
+							<option value="texts_brazilian.xml.gz">Brazilian</option>
+							<option value="texts_chinese.xml.gz">Chinese</option>
+							<option value="texts_english.xml.gz" selected="selected">English</option><!--Default-->
+							<option value="texts_french.xml.gz">French</option>
+							<option value="texts_german.xml.gz">German</option>
+							<option value="texts_italian.xml.gz">Italian</option>
+							<option value="texts_japanese.xml.gz">Japanese</option>
+							<option value="texts_korean.xml.gz">Korean</option>
+							<option value="texts_polish.xml.gz">Polish</option>
+							<option value="texts_portuguese.xml.gz">Portuguese</option>
+							<option value="texts_russian.xml.gz">Russian</option>
+							<option value="texts_spanish.xml.gz">Spanish</option>
+							<option value="texts_taiwanese.xml.gz">Taiwanese</option>
+						</select>
+						<button class="btn" id='your-id' onclick="performTextSearch()">Search</button>
+					</form>
+				</div><!-- id => form_text_search | class => search_form -->
+				<div id="form_value_search" class="search_form">
+					<form id="search-form">
+						<input type="text" name="input_value_search_val" placeholder="Value">
+						<input type="text" name="input_value_search_prop" placeholder="property (optional)">
+						<button class="btn" id='your-id' onclick="performAssetSearch()">Search</button>
+					</form>
+				</div><!-- id => form_value_search | class => search_form -->
+				<div id="form_waldow_search" class="search_form"></div><!-- id => form_waldow_search | class => search_form -->
+
+			</div><!-- id => search_forms -->
+		</div><!-- id => searchbar -->
+	</div><!-- id => header -->
+
+	<div id="content">
+
+		<!------------------------------------------------->
+		<!------- Result list on LEFT side        --------->
+		<!------- can be used for list of results --------->
+		<!------------------------------------------------->
+
+		<div id="result_list">
+
+			<table id="table_result_list">
+				<!-- Optional: Spaltennamen -->
+				<tr>
+					<th>GUID</th>
+					<th>Text</th>
+					<th>LINK</th>
+				</tr>
+				<tr>
+					<td>1010217</td>
+					<td>Canned Food</td>
+					<td><button class="material-symbols-outlined">search</button></td>
+				</tr>
+				<tr>
+					<td>500008</td>
+					<td>Canned Food</td>
+				</tr>
+				<tr>
+					<td>10075</td>
+					<td>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</td>
+				</tr>
+				<tr>
+					<td>3428</td>
+					<td>CORNUCOPIA OF CANNED FOOD!</td>
+				</tr>
+				<tr>
+					<td>3390</td>
+					<td>CANNED FOOD SHORTAGE!</td>
+				</tr>
+			</table><!-- id => table_result_list -->
+
+		</div><!-- id => result_list -->
+
+		<!------------------------------------------------->
+		<!------- Result list on RIGHT side       --------->
+		<!------- can be used for details of sth  --------->
+		<!------------------------------------------------->
+
+		<div id="result_details">
+
+
+			<div id="detail_view">
+				<div id="detail_view_tab_bar">
+					<div id="detail_data_tab" class="detail_tab active_detail_tab" onclick="opendetails('detail_data')">Data</div>
+					<div id="detail_xml_tab" class="detail_tab" onclick="opendetails('detail_xml')">XML</div>
+					<div id="detail_txt_tab" class="detail_tab" onclick="opendetails('detail_txt')">TXT</div>
+					<div id="detail_img_tab" class="detail_tab" onclick="opendetails('detail_img')">img</div>
+				</div>
+			</div><!-- id => detail_view -->
+			<div id="detail_destination">
+				<div id="detail_data" style="display: block">sample data</div><!-- id => detail_data -->
+				<div id="detail_xml">sample xml</div><!-- id => detail_xml -->
+				<div id="detail_txt">sample txt</div><!-- id => detail_txt -->
+				<div id="detail_img">sample img</div><!-- id => detail_img -->
+			</div><!-- id => detail_destination -->
+
+
+		</div><!-- id => result_list -->
+	</div><!-- id => content -->
+
+
+	<footer>
+		inspired by a1800.net - Scripts by pnski - Layout by schwubbe.
+	</footer>
+
 	<script src="search.js"></script>
 </body>
 
