@@ -74,17 +74,18 @@
 			<div class="search_forms">
 				<div id="form_asset_search" class="search_form" style="display: block">
 					<form id="search-form">
-						<input type="text" name="input_asset_search" placeholder="GUID or some string for asset or template name">
+						<input type="hidden" name="searchFile" value="assets.xml.gz">
+						<input type="hidden" name="parentTag" value="asset">
+						<input type="text" name="searchString" placeholder="GUID or some string for asset or template name">
 						<label><input type="checkbox" name="asset_search_filter_non_strikt" id="asset_search_filter_non_strikt">Non-strikt</label>
 						<label><input type="checkbox" name="asset_search_filter_no_txt" id="asset_search_filter_no_txt">No texts/audio</label>
-						<button class="btn" id='your-id'
-							onclick="perfSearch('assets.xml.gz','asset',document.getElementById('asset_search_filter_non_strikt').value,document.getElementById('input_asset_search').value)">Search</button>
+						<button class="btn" id='your-id'>Search</button>
 					</form>
 				</div><!-- id => form_asset_search | class => search_form -->
 				<div id="form_text_search" class="search_form">
 					<form id="search-form">
-						<input type="text" name="input_text_search" placeholder="Enter Text you wanna search for">
-						<select id="select_lang_text_search" name="select_lang_text_search">
+						<input type="text" name="searchString" placeholder="Enter Text you wanna search for">
+						<select name="searchFile">
 							<option value="texts_brazilian.xml.gz">Brazilian</option>
 							<option value="texts_chinese.xml.gz">Chinese</option>
 							<option value="texts_english.xml.gz" selected="selected">English</option><!--Default-->
@@ -99,14 +100,14 @@
 							<option value="texts_spanish.xml.gz">Spanish</option>
 							<option value="texts_taiwanese.xml.gz">Taiwanese</option>
 						</select>
-						<button class="btn" id='your-id' onclick="performTextSearch()">Search</button>
+						<button class="btn" id='your-id'>Search</button>
 					</form>
 				</div><!-- id => form_text_search | class => search_form -->
 				<div id="form_value_search" class="search_form">
 					<form id="search-form">
 						<input type="text" name="input_value_search_val" placeholder="Value">
 						<input type="text" name="input_value_search_prop" placeholder="property (optional)">
-						<button class="btn" id='your-id' onclick="performAssetSearch()">Search</button>
+						<button class="btn" id='your-id'>Search</button>
 					</form>
 				</div><!-- id => form_value_search | class => search_form -->
 				<div id="form_waldow_search" class="search_form"></div><!-- id => form_waldow_search | class => search_form -->
