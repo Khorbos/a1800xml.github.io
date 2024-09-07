@@ -1,4 +1,38 @@
 /**
+ * @param {object} results
+ * **/
+function displayResultList(results) {
+	const resultsList = document.getElementById("table_result_list");
+	resultsList.innerHTML = "";
+	const tr = document.createElement("tr");
+	["GUID", "Text", "Link"].forEach(ele => {
+		const th = document.createElement("th");
+		th.textContent = ele;
+		tr.appendChild(th);
+		console.log("done");
+	});
+	resultsList.appendChild(tr);
+	// Process each result and create a table row
+	results.forEach(result => {
+		const tr = document.createElement("tr");
+		const guid = result.children.find(child => child.tag === "GUID")?.content || "";
+		const textOrName = result.children.find(child => child.tag === "Text" || child.tag === "Name")?.content || "";
+		const tdGuid = document.createElement("td");
+		tdGuid.textContent = guid;
+		tr.appendChild(tdGuid);
+		const tdTextOrName = document.createElement("td");
+		tdTextOrName.textContent = textOrName;
+		tr.appendChild(tdTextOrName);
+
+		// Add placeholder for Link (can be filled later if needed)
+		const tdLink = document.createElement("td");
+		tdLink.textContent = ""; // Empty for now, modify as needed
+		tr.appendChild(tdLink);
+
+		resultsList.appendChild(tr);
+	});
+}
+/**
  * @param {*} _Search
  * **/
 function ioData(_Search) {}
@@ -48,6 +82,7 @@ async function perfSearch({ searchFile, searchString, searchTag = ["GUID", "Name
 	worker.onmessage = e => {
 		const results = e.data;
 		console.log("Matching results:", results);
+		displayResultList(results);
 	};
 }
 
