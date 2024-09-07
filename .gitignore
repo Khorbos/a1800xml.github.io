@@ -1,2 +1,6 @@
-xml/
-!./xml/*.gz
+# xml folder
+
+xml/*
+!xml/*.gz
+!xml/*.mjs
+!xml/*.bat
