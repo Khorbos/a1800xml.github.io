@@ -1,3 +1,29 @@
+function findTagContent(data, tags) {
+	let result = { GUID: "", Text: "", Name: "" };
+
+	function search(node) {
+		// Check if the node matches any of the tags
+		if (tags.includes(node.tag)) {
+			if (node.tag === "GUID") {
+				result.GUID = node.content;
+			} else if (node.tag === "Text") {
+				result.Text = node.content;
+			} else if (node.tag === "Name") {
+				result.Name = node.content;
+			}
+		}
+
+		// Recursively search children if they exist
+		if (node.children && Array.isArray(node.children)) {
+			node.children.forEach(child => search(child));
+		}
+	}
+
+	// Start the search from the root
+	search(data);
+	return result;
+}
+
 /**
  * @param {object} results
  * **/
@@ -15,13 +41,13 @@ function displayResultList(results) {
 	// Process each result and create a table row
 	results.forEach(result => {
 		const tr = document.createElement("tr");
-		const guid = result.children.find(child => child.tag === "GUID")?.content || "";
-		const textOrName = result.children.find(child => child.tag === "Text" || child.tag === "Name")?.content || "";
+		const guid = findTagContent(result, ["GUID", "Name", "Text"]);
+		/* console.log(guid); */
 		const tdGuid = document.createElement("td");
-		tdGuid.textContent = guid;
+		tdGuid.textContent = guid.GUID;
 		tr.appendChild(tdGuid);
 		const tdTextOrName = document.createElement("td");
-		tdTextOrName.textContent = textOrName;
+		tdTextOrName.textContent = guid.Text;
 		tr.appendChild(tdTextOrName);
 
 		// Add placeholder for Link (can be filled later if needed)

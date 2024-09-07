@@ -4,6 +4,7 @@ importScripts("https://cdn.jsdelivr.net/npm/sax@1.4.1/lib/sax.min.js");
 self.onmessage = function (e) {
 	const { _XML, searchString, searchTag, parentTag, strict } = e.data;
 	console.log("started worker");
+	/* console.log(_XML, searchString, searchTag, parentTag, strict); */
 	const [parser, results] = [sax.parser(true), []];
 	let [currentTag, currentContent, stack] = [null, "", []];
 
@@ -30,6 +31,7 @@ self.onmessage = function (e) {
 
 		if (searchTag.includes(tagName) && currentContent.toLowerCase().includes(searchString.toLowerCase())) {
 			// Search for the nearest matching parent in the stack
+			/* console.log("result"); */
 			for (let i = stack.length - 1; i >= 0; i--) {
 				if (stack[i].tag == parentTag) {
 					results.push(stack[i]); // Push the matching parent tag
