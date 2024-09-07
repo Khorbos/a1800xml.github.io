@@ -39,10 +39,16 @@ async function fetchData(_file) {
  * @param {boolean} strict null = on; true=off/non-strict
  * **/
 
-async function perfSearch({ searchFile, searchString, searchTag = ["GUID", "Name"], parentTag, strict = null }) {
+async function perfSearch({ searchFile, searchString, searchTag = ["GUID", "Name", "Text"], parentTag, strict = null }) {
 	const _XML = await fetchData(searchFile);
+
 	const worker = new Worker("worker.js");
 	worker.postMessage({ _XML, searchString, searchTag, parentTag, strict });
+
+	worker.onmessage = e => {
+		const results = e.data;
+		console.log("Matching results:", results);
+	};
 }
 
 /* main entry for Search */
