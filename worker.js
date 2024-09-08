@@ -2,7 +2,7 @@ importScripts("https://cdn.jsdelivr.net/npm/sax@1.4.1/lib/sax.min.js");
 /* Simple API for XML */
 
 self.onmessage = function (e) {
-	const { _XML, searchString, searchTag, parentTag, strict } = e.data;
+	const { _XML, searchString, searchTag, parentTag, nonstrict } = e.data;
 	console.log("started worker");
 	/* console.log(_XML, searchString, searchTag, parentTag, strict); */
 	const [parser, results] = [sax.parser(true), []];
@@ -29,7 +29,10 @@ self.onmessage = function (e) {
 			stack[stack.length - 1].children.push(element);
 		}
 
-		if (searchTag.includes(tagName) && currentContent.toLowerCase().includes(searchString.toLowerCase())) {
+		if (
+			searchTag.includes(tagName) &&
+			(nonstrict ? currentContent.toLowerCase().includes(searchString.toLowerCase()) : currentContent.toLowerCase() === searchString.toLowerCase())
+		) {
 			// Search for the nearest matching parent in the stack
 			/* console.log("result"); */
 			for (let i = stack.length - 1; i >= 0; i--) {

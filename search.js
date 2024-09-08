@@ -1,3 +1,89 @@
+/**
+ * @param {number} GUID the GUID to retrieve
+ * @returns XML Object from string
+ * **/
+function getDataFromSessionStorage(GUID) {
+    const storedData = sessionStorage.getItem(GUID);
+    return storedData ? JSON.parse(storedData) : null;
+}
+
+// Function to switch tabs
+function switchTab(tabId) {
+    // Hide all tab content
+    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+    
+    // Show the selected tab content
+    document.getElementById(tabId).style.display = 'block';
+}
+
+// Function to display JSON as XML
+function displayAsXML(data) {
+    const xmlView = document.getElementById('xml-view');
+    xmlView.textContent = jsonToXML(data); // Assuming you have a function to convert JSON to XML
+}
+
+// Function to display JSON as formatted list
+function displayAsList(data) {
+    const listView = document.getElementById('list-view');
+    const listItems = data.map(item => {
+        // Generate path for each item e.g. "Properties/Building/BuildingTypeFactory"
+        return `${item.path || ''}/${item.value || ''}`;
+    });
+    listView.innerHTML = `<pre>${listItems.join('\n')}</pre>`;
+}
+
+// Add event listeners for tab switching and rendering the content
+document.getElementById('tab-xml').addEventListener('click', () => {
+    const data = getDataFromSessionStorage('yourDataKey');
+    if (data) {
+        displayAsXML(data);
+        switchTab('xml-view');
+    }
+});
+
+document.getElementById('tab-list').addEventListener('click', () => {
+    const data = getDataFromSessionStorage('yourDataKey');
+    if (data) {
+        displayAsList(data);
+        switchTab('list-view');
+    }
+});
+
+// Call the default tab on load (optional)
+window.onload = function() {
+    document.getElementById('tab-list').click();  // Default to list view
+};
+
+function jsonToXML(json) {
+    // Configuration for XML formatting (optional, you can customize it)
+    const options = {
+        attributeNamePrefix : "@_",
+        textNodeName : "#text",
+        ignoreAttributes : false,
+        format: true,        // Pretty print the XML output
+        indentBy: "  ",      // Two spaces for indenting
+        supressEmptyNode: true
+    };
+
+    // Create a parser instance with the options
+    const parser = new fastxmlparser.j2xParser(options);
+
+    // Convert JSON to XML
+    const xml = parser.parse(json);
+
+    return xml;
+}
+
+function displayAsXML(data) {
+    const xmlView = document.getElementById('xml-view');
+    xmlView.textContent = jsonToXML(data);  // Use fast-xml-parser to convert JSON to XML
+}
+
+
+/**
+ *
+ * **/
+
 function findTagContent(data, tags) {
 	let result = { GUID: "", Text: "", Name: "" };
 
@@ -35,7 +121,6 @@ function displayResultList(results) {
 		const th = document.createElement("th");
 		th.textContent = ele;
 		tr.appendChild(th);
-		console.log("done");
 	});
 	resultsList.appendChild(tr);
 	// Process each result and create a table row
@@ -44,15 +129,17 @@ function displayResultList(results) {
 		const guid = findTagContent(result, ["GUID", "Name", "Text"]);
 		/* console.log(guid); */
 		const tdGuid = document.createElement("td");
+		sessionStorage.setItem(guid.GUID, JSON.stringify(result));
 		tdGuid.textContent = guid.GUID;
 		tr.appendChild(tdGuid);
 		const tdTextOrName = document.createElement("td");
 		tdTextOrName.textContent = guid.Text;
 		tr.appendChild(tdTextOrName);
 
-		// Add placeholder for Link (can be filled later if needed)
+		/* link? */
 		const tdLink = document.createElement("td");
-		tdLink.textContent = ""; // Empty for now, modify as needed
+		tdLink.className = "material-symbols-outlined";
+		tdLink.textContent = "arrow_outward";
 		tr.appendChild(tdLink);
 
 		resultsList.appendChild(tr);
@@ -68,7 +155,7 @@ function ioData(_Search) {}
  * @returns {string}
  * **/
 async function fetchData(_file) {
-	const cachedData = localStorage.getItem(_file);
+	const cachedData = sessionStorage.getItem(_file);
 	if (cachedData) {
 		return cachedData;
 	} else {
@@ -78,9 +165,9 @@ async function fetchData(_file) {
 				const compressed = new Uint8Array(buffer);
 				const decompressed = pako.inflate(compressed, { to: "string" });
 				try {
-					localStorage.setItem(_file, decompressed);
+					sessionStorage.setItem(_file, decompressed);
 				} catch (error) {
-					console.log("uncompressed file exceeds localStorageLimit, need to fetch every time :(");
+					console.log("uncompressed file exceeds sessionStorageLimit, need to fetch every time :(");
 				}
 				return decompressed;
 			})
@@ -96,18 +183,17 @@ async function fetchData(_file) {
  * @param {string} searchString e.g. Human7
  * @param {string} parentTag e.g. asset
  * @param {string[]} [searchTag=["GUID","Name"]] e.g. GUID, Name, Text, Template
- * @param {boolean} strict null = on; true=off/non-strict
+ * @param {*} nonstrict null/undefined = off; on=off/non-strict
  * **/
 
-async function perfSearch({ searchFile, searchString, searchTag = ["GUID", "Name", "Text"], parentTag, strict = null }) {
+async function perfSearch({ searchFile, searchString, searchTag = ["GUID", "Name", "Text"], parentTag, nonstrict }) {
 	const _XML = await fetchData(searchFile);
 
 	const worker = new Worker("worker.js");
-	worker.postMessage({ _XML, searchString, searchTag, parentTag, strict });
+	worker.postMessage({ _XML, searchString, searchTag, parentTag, nonstrict });
 
 	worker.onmessage = e => {
 		const results = e.data;
-		console.log("Matching results:", results);
 		displayResultList(results);
 	};
 }
@@ -125,7 +211,6 @@ window.addEventListener("DOMContentLoaded", function () {
 
 			const formData = new FormData(form);
 			const formDataObj = Object.fromEntries(formData.entries());
-
 			perfSearch(formDataObj);
 		},
 		true

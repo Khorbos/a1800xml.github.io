@@ -15,9 +15,13 @@
 	<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 	<!-- ModelViewer GLB -->
 	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
 	<script src=" https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
 	<!-- zlib library to unpack-->
+	<script src="https://cdn.jsdelivr.net/npm/fast-xml-parser"></script>
+	<!-- fast-xml-parser -->
 
 	<!-- scripts for layout functionality -->
 	<script>
@@ -40,11 +44,9 @@
 		function opendetails(tab_id) {
 			document.getElementById("detail_data").style.display = "none";
 			document.getElementById("detail_xml").style.display = "none";
-			document.getElementById("detail_txt").style.display = "none";
 			document.getElementById("detail_img").style.display = "none";
 			document.getElementById("detail_data_tab").classList.remove("active_detail_tab");
 			document.getElementById("detail_xml_tab").classList.remove("active_detail_tab");
-			document.getElementById("detail_txt_tab").classList.remove("active_detail_tab");
 			document.getElementById("detail_img_tab").classList.remove("active_detail_tab");
 			document.getElementById(tab_id).style.display = "block";
 			document.getElementById(tab_id + "_tab").classList.add("active_detail_tab");
@@ -52,13 +54,14 @@
 	</script>
 </head>
 
-<body>
+<body class="dark-mode">
+	<div id="loader_div"><span class="loader"></span></div>
 	<div id="header">
 		<div id="headbar">
 			<div id="sitname">
 				<h1>Anno 1800 XML Search</h1>
+
 			</div>
-			<div id="css_toggle" onclick="toggle_dark_mode()">toggle dark mode</div>
 		</div><!-- id => toolbar -->
 		<div id="searchbar">
 			<div id="search_header">
@@ -70,6 +73,8 @@
 				<!-- id = value_search | class => search_tab -->
 				<div id="waldow_search" class="search_tab" onclick="opensearchform('waldow_search')">Where-is-Waldow</div>
 				<!-- id = waldow_search | class => search_tab -->
+
+				<div id="css_toggle" onclick="toggle_dark_mode()"><span class="material-symbols-outlined icon-ModeSwitch"></span></div>
 			</div><!-- id => search_header -->
 			<div class="search_forms">
 				<div id="form_asset_search" class="search_form" style="display: block">
@@ -78,9 +83,8 @@
 						<input type="hidden" name="parentTag" value="Asset">
 						<input type="hidden" name="searchTag" value='["Name","GUID","Template"]'>
 						<input type="text" name="searchString" placeholder="GUID or some string for asset or template name">
-						<label><input type="checkbox" name="asset_search_filter_non_strikt" id="asset_search_filter_non_strikt">Non-strikt</label>
-						<label><input type="checkbox" name="asset_search_filter_no_txt" id="asset_search_filter_no_txt">No texts/audio</label>
-						<button class="btn" id='your-id'>Search</button>
+						<label><input type="checkbox" name="nonstrict">Non-strikt</label>
+						<button class="material-symbols-outlined" id="your-id">search</button>
 					</form>
 				</div><!-- id => form_asset_search | class => search_form -->
 				<div id="form_text_search" class="search_form">
@@ -103,14 +107,14 @@
 							<option value="texts_spanish.xml.gz">Spanish</option>
 							<option value="texts_taiwanese.xml.gz">Taiwanese</option>
 						</select>
-						<button class="btn" id='your-id'>Search</button>
+						<button class="material-symbols-outlined" id="your-id">search</button>
 					</form>
 				</div><!-- id => form_text_search | class => search_form -->
 				<div id="form_value_search" class="search_form">
 					<form id="search-form">
 						<input type="text" name="input_value_search_val" placeholder="Value">
 						<input type="text" name="input_value_search_prop" placeholder="property (optional)">
-						<button class="btn" id='your-id'>Search</button>
+						<button class="material-symbols-outlined" id="your-id">search</button>
 					</form>
 				</div><!-- id => form_value_search | class => search_form -->
 				<div id="form_waldow_search" class="search_form"></div><!-- id => form_waldow_search | class => search_form -->
@@ -118,7 +122,6 @@
 			</div><!-- id => search_forms -->
 		</div><!-- id => searchbar -->
 	</div><!-- id => header -->
-
 	<div id="content">
 
 		<!------------------------------------------------->
@@ -138,15 +141,16 @@
 				<tr>
 					<td>1010217</td>
 					<td>Canned Food</td>
-					<td><button class="material-symbols-outlined">search</button></td>
+					<td><button class="material-symbols-outlined"></button></td>
 				</tr>
 				<tr>
 					<td>500008</td>
 					<td>Canned Food</td>
+					<td><button class="material-symbols-outlined"></button></td>
 				</tr>
 				<tr>
 					<td>10075</td>
-					<td>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</td>
+					<td><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></td>
 				</tr>
 				<tr>
 					<td>3428</td>
@@ -172,19 +176,23 @@
 				<div id="detail_view_tab_bar">
 					<div id="detail_data_tab" class="detail_tab active_detail_tab" onclick="opendetails('detail_data')">Data</div>
 					<div id="detail_xml_tab" class="detail_tab" onclick="opendetails('detail_xml')">XML</div>
-					<div id="detail_txt_tab" class="detail_tab" onclick="opendetails('detail_txt')">TXT</div>
-					<div id="detail_img_tab" class="detail_tab" onclick="opendetails('detail_img')">img</div>
+					<div id="detail_img_tab" class="detail_tab" onclick="opendetails('detail_img')">3D</div>
 				</div>
 			</div><!-- id => detail_view -->
 			<div id="detail_destination">
+
+
+
+
+
+
 				<div id="detail_data" style="display: block">sample data</div><!-- id => detail_data -->
 				<div id="detail_xml">sample xml</div><!-- id => detail_xml -->
-				<div id="detail_txt">sample txt</div><!-- id => detail_txt -->
 				<div id="detail_img">sample img</div><!-- id => detail_img -->
 			</div><!-- id => detail_destination -->
 
 
-		</div><!-- id => result_list -->
+		</div><!-- id => result_details -->
 	</div><!-- id => content -->
 
 

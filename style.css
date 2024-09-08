@@ -7,6 +7,9 @@
   --third-color: antiquewhite;
   --fourth-color: #eaeaea;
   --fifth-color: lightgrey;
+  --search-tab-bg: lightgrey;
+  --table-bg-color: #ebdac3;
+  --icon-ModeSwitch: 'dark_mode';
 }
 
 .dark-mode {
@@ -17,6 +20,24 @@
   /* color mod-io */
   --fourth-color: #262c36;
   --fifth-color: #151b23;
+  --search-tab-bg: #262c36;
+  --table-bg-color: #262c36;
+  --icon-ModeSwitch: 'light_mode';
+}
+
+.material-symbols-outlined {
+  color: var(--first-color);
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-right: 20px;
+  background-color: var(--search-tab-bg);
+}
+
+.icon-ModeSwitch::before {
+  content: var(--icon-ModeSwitch);
+  /* Dynamically use the search icon */
+  color: #eaeaea;
+  /* same as headbar? */
 }
 
 html {
@@ -48,6 +69,9 @@ body {
 
 #css_toggle {
   float: right;
+  padding-right: 50px;
+  height: 32px;
+  width: 32px;
 }
 
 #searchbar {
@@ -58,9 +82,9 @@ body {
 /* search-forms */
 .search_tab {
   display: inline-block;
-  background-color: var(--fifth-color);
+  background-color: var(--search-tab-bg);
   padding: 3px 15px;
-  border-radius: 5px 5px 0px 0px;
+  border-radius: 5px 5px 0 0;
   font-weight: bold;
   font-size: 1.25em;
 }
@@ -87,14 +111,11 @@ form>input {
   width: 350px;
 }
 
-/* Buttons */
-.btn {}
-
 /* content */
 #content {
   display: flex;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vw;
   margin-bottom: 30px;
 }
 
@@ -102,18 +123,40 @@ form>input {
   background-color: var(--third-color);
   color: var(--first-color);
   display: inline-block;
-  width: calc(100% - 70%);
+  width: 20vw;
   padding: 20px 10px 10px 20px;
   height: 100%;
 }
 
 #table_result_list {
-  width: calc(100% - 30%);
+  width: 10vw;
+}
+
+#table_result_list tr:nth-child(odd) {
+  background-color: var(--table-bg-color);
 }
 
 #table_result_list tr td {
-  vertical-align: top;
+  vertical-align: middle;
+  padding: 0 5px;
 }
+
+#table_result_list tr td:nth-child(1) {
+  text-align: right;
+}
+
+#table_result_list tr td>span {
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 5vw;
+  display: block;
+  margin-left: 5px;
+}
+
+
+
 
 #result_details {
   display: inline-block;
@@ -159,8 +202,16 @@ form>input {
   background-color: var(--fourth-color);
   color: var(--first-color);
   height: 100%;
-  padding: 20px 10px 0px 20px;
+  padding: 20px 20px 0px 20px;
 }
+
+#detail_xml textarea {
+  width: 100%;
+  height: calc(100% - 20px);
+  padding: 0;
+
+}
+
 
 footer {
   width: 100%;
@@ -169,3 +220,83 @@ footer {
   height: 30px;
   color: var(--fourth-color);
 }
+
+
+
+
+
+
+#loader_div {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: calc(100% / 2 - 35px);
+  display: none;
+}
+
+
+
+.loader {
+  border: 24px solid;
+  border-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: animloader 1s linear infinite;
+}
+
+@keyframes animloader {
+  0% {
+    border-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.75);
+  }
+
+  33% {
+    border-color: rgba(255, 255, 255, 0.75) rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35);
+  }
+
+  66% {
+    border-color: rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.75) rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25);
+  }
+
+  100% {
+    border-color: rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.75) rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Buttons */
+.btn {
+  height: 28px;
+  width: 28px;
+  /*  background-color: var(--fourth-color); */
+  background-color: unset;
+  border-radius: 14px;
+  border: none;
+}
+
+
+/* Symbols and Icons */
+
+.search_icon {
+  background-image: var(--icon-search);
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-right: 20px;
+}
+
+/* .toggle_on_icon {
+  background-image: var(--icon-toggle-on);
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-right: 20px;
+  height: 30px;
+  width: 30px;
+} */
+
+/* .toggle_off_icon {
+  background-image: var(--icon-toggle-off);
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-right: 20px;
+  height: 30px;
+  width: 30px;
+} */
