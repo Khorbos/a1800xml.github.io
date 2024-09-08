@@ -33,7 +33,7 @@ function displayAsList(data) {
 }
 
 // Add event listeners for tab switching and rendering the content
-document.getElementById('tab-xml').addEventListener('click', () => {
+document.getElementById('detail_destination').addEventListener('click', () => {
     const data = getDataFromSessionStorage('yourDataKey');
     if (data) {
         displayAsXML(data);
@@ -41,7 +41,7 @@ document.getElementById('tab-xml').addEventListener('click', () => {
     }
 });
 
-document.getElementById('tab-list').addEventListener('click', () => {
+document.getElementById('detail_destination').addEventListener('click', () => {
     const data = getDataFromSessionStorage('yourDataKey');
     if (data) {
         displayAsList(data);
@@ -51,7 +51,7 @@ document.getElementById('tab-list').addEventListener('click', () => {
 
 // Call the default tab on load (optional)
 window.onload = function() {
-    document.getElementById('tab-list').click();  // Default to list view
+    document.getElementById('detail_destination').click();  // Default to list view
 };
 
 function jsonToXML(json) {
@@ -114,6 +114,7 @@ function findTagContent(data, tags) {
  * @param {object} results
  * **/
 function displayResultList(results) {
+    console.log("display",results)
 	const resultsList = document.getElementById("table_result_list");
 	resultsList.innerHTML = "";
 	const tr = document.createElement("tr");
