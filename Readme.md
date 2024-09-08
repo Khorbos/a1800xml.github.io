@@ -8,3 +8,12 @@ GZip compression=9 xmlMin files = 26.9MB
 
 ## ICO
 
+DDS
+alle _2.dds to png = 64*64
+
+## 3d
+
+DataAtribute
+
+
+- Bootsrap: css

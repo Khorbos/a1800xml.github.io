@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,7 +55,17 @@
 </head>
 
 <body class="dark-mode">
-	<div id="loader_div"><span class="loader"></span></div>
+	<div id="loader_div" style="display: block"><span class="loader"></span></div>
+	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_0.glb" shadow-intensity="1"
+		alt="A 3D model of a shishkebab"></model-viewer>
+	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_1.glb" shadow-intensity="1"
+		alt="A 3D model of a shishkebab"></model-viewer>
+	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_2.glb" shadow-intensity="1"
+		alt="A 3D model of a shishkebab"></model-viewer>
+	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_3.glb" shadow-intensity="1"
+		alt="A 3D model of a shishkebab"></model-viewer>
+	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_4.glb" shadow-intensity="1"
+		alt="A 3D model of a shishkebab"></model-viewer>
 	<div id="header">
 		<div id="headbar">
 			<div id="sitname">
@@ -108,7 +117,7 @@
 							<option value="texts_spanish.xml.gz">Spanish</option>
 							<option value="texts_taiwanese.xml.gz">Taiwanese</option>
 						</select>
-						<button class="material-symbols-outlined" id="your-id">search</button>
+						<button class="material-symbols-outlined btn" id="your-id">search</button>
 					</form>
 				</div><!-- id => form_text_search | class => search_form -->
 				<div id="form_value_search" class="search_form">

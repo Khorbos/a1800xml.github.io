@@ -218,6 +218,10 @@ form>input {
   display: none;
 }
 
+model-viewer {
+  width: 750px; /* or any percentage or fixed value like 600px */
+  height: 750px; /* or any fixed height */
+}
 
 
 .loader {
