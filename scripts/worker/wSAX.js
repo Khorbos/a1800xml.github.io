@@ -64,5 +64,3 @@ self.onmessage = function (e) {
 	// Send the results back to the main thread
 	self.postMessage(results);
 };
-
-console.log("1008");

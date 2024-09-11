@@ -1,4 +1,4 @@
-/* <script src=" https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+/* 
 	
 	<script src="scripts/fxp.min.js"></script>
 	<!-- fast-xml-parser -->
@@ -11,17 +11,10 @@
 import * as pako from "https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js";
 /* zlib library to unpack */
 
-import * as iDB from "lib/dataBase.js";
+import * as iDB from "./lib/dataBase.js";
 /* database modules */
 
-/**
- * @param {number} GUID the GUID to retrieve
- * @returns XML Object from string
- * **/
-function getDataFromSessionStorage(GUID) {
-	const storedData = sessionStorage.getItem(GUID);
-	return storedData ? JSON.parse(storedData) : null;
-}
+import * as searches from "./lib/iSearches.js";
 
 // Function to switch tabs
 function switchTab(tabId) {
@@ -31,12 +24,6 @@ function switchTab(tabId) {
 	// Show the selected tab content
 	document.getElementById(tabId).style.display = "block";
 }
-
-/* // Function to display JSON as XML
-function displayAsXML(data) {
-	const xmlView = document.getElementById("xml-view");
-	xmlView.textContent = jsonToXML(data); // Assuming you have a function to convert JSON to XML
-} */
 
 // Function to display JSON as formatted list
 function displayAsList(data) {
@@ -96,41 +83,9 @@ function displayAsXML(data) {
 }
 
 /**
- *
- * **/
-
-function findTagContent(data, tags) {
-	let result = { GUID: "", Text: "", Name: "" };
-
-	function search(node) {
-		// Check if the node matches any of the tags
-		if (tags.includes(node.tag)) {
-			if (node.tag === "GUID") {
-				result.GUID = node.content;
-			} else if (node.tag === "Text") {
-				result.Text = node.content;
-			} else if (node.tag === "Name") {
-				result.Name = node.content;
-			}
-		}
-
-		// Recursively search children if they exist
-		if (node.children && Array.isArray(node.children)) {
-			node.children.forEach(child => search(child));
-		}
-	}
-
-	// Start the search from the root
-	search(data);
-	return result;
-}
-
-/**
  * @param {object} results
  * **/
 function displayResultList(results) {
-	storeInIndexedDB(results);
-	console.log("display", results);
 	/* get ResultsListTarget */
 	const resultsList = document.getElementById("result_list_target");
 	/* empty */
@@ -144,6 +99,13 @@ function displayResultList(results) {
 		divList[rTag.GUID] = document.createElement("div");
 		divList[rTag.GUID].className = "result_list_row";
 		divList.dataGUID = rTag.GUID;
+
+		/* const divElements = ["resDivGUID", "resDivSht", "resDivLnk"];
+		const elements = {};
+
+		divElements.forEach(name => {
+			elements[name] = document.createElement("div");
+		}); */
 
 		const resDivGUID = document.createElement("div");
 		const resDivSht = document.createElement("div");
@@ -163,10 +125,6 @@ function displayResultList(results) {
 		resultsList.appendChild(ele);
 	});
 }
-/**
- * @param {*} _Search
- * **/
-function ioData(_Search) {}
 
 /**
  * @param {string} _file e.g. "assets.xml.gz"
@@ -226,15 +184,15 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
- * 
+ *
  * **/
-window.addEventListener('beforeunload', () => {
-    const dbName = 'your-database-name';
-    const request = indexedDB.deleteDatabase(dbName);
-    request.onsuccess = () => {
-        console.log(`Database ${dbName} deleted successfully.`);
-    };
-    request.onerror = (event) => {
-        console.error('Database deletion failed:', event.target.error);
-    };
+window.addEventListener("beforeunload", () => {
+	const dbName = "your-database-name";
+	const request = indexedDB.deleteDatabase(dbName);
+	request.onsuccess = () => {
+		console.log(`Database ${dbName} deleted successfully.`);
+	};
+	request.onerror = event => {
+		console.error("Database deletion failed:", event.target.error);
+	};
 });
