@@ -1,3 +1,11 @@
+<!-------------------------------------------->
+<!-------------------------------------------->
+<!-------    Inspired by a1800.net    -------->
+<!-------    Scripts: pnski           -------->
+<!-------    Layout: schwubbe         -------->
+<!-------------------------------------------->
+<!-------------------------------------------->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,25 +26,29 @@
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-	<script src=" https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
-	<!-- zlib library to unpack-->
-	<script src="https://cdn.jsdelivr.net/npm/fast-xml-parser"></script>
-	<!-- fast-xml-parser -->
-
 	<!-- scripts for layout functionality -->
 	<script>
 		function toggle_dark_mode() {
 			var element = document.body;
 			element.classList.toggle("dark-mode");
 		}
+		function toggleExpertMode() {
+			var x = document.getElementById("expert_form_fields");
+			var y = document.getElementById("icon_expert_search");
+			if (x.style.display === "none") {
+				x.style.display = "flex";
+				y.classList.add("flip_icon");
+			} else {
+				x.style.display = "none";
+				y.classList.remove("flip_icon");
+			}
+		}
 		function opensearchform(form_id) {
 			document.getElementById("form_asset_search").style.display = "none";
 			document.getElementById("form_text_search").style.display = "none";
-			document.getElementById("form_value_search").style.display = "none";
 			document.getElementById("form_waldow_search").style.display = "none";
 			document.getElementById("asset_search").classList.remove("active_search_tab");
 			document.getElementById("text_search").classList.remove("active_search_tab");
-			document.getElementById("value_search").classList.remove("active_search_tab");
 			document.getElementById("waldow_search").classList.remove("active_search_tab");
 			document.getElementById("form_" + form_id).style.display = "block";
 			document.getElementById(form_id).classList.add("active_search_tab");
@@ -52,36 +64,25 @@
 			document.getElementById(tab_id + "_tab").classList.add("active_detail_tab");
 		}
 	</script>
+
 </head>
 
 <body class="dark-mode">
-	<div id="loader_div" style="display: block"><span class="loader"></span></div>
-	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_0.glb" shadow-intensity="1"
-		alt="A 3D model of a shishkebab"></model-viewer>
-	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_1.glb" shadow-intensity="1"
-		alt="A 3D model of a shishkebab"></model-viewer>
-	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_2.glb" shadow-intensity="1"
-		alt="A 3D model of a shishkebab"></model-viewer>
-	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_3.glb" shadow-intensity="1"
-		alt="A 3D model of a shishkebab"></model-viewer>
-	<model-viewer id="reveal" loading="eager" camera-controls touch-action="pan-y" src="3d/glb_4.glb" shadow-intensity="1"
-		alt="A 3D model of a shishkebab"></model-viewer>
+	<div id="loader_div"><span class="loader"></span></div>
 	<div id="header">
 		<div id="headbar">
 			<div id="sitname">
 				<h1>Anno 1800 XML Search</h1>
 			</div>
-			<div id="imprint">inspired by a1800.net - Scripts by pnski - Layout by schwubbe.</div>
+			<!-- <div id="license">HH-MM 1234</div> -->
 		</div><!-- id => toolbar -->
 		<div id="searchbar">
 			<div id="search_header">
 				<div id="asset_search" class="search_tab active_search_tab" onclick="opensearchform('asset_search')">Asset_search</div>
 				<!-- id = asset_search | class => search_tab -->
 				<div id="text_search" class="search_tab" onclick="opensearchform('text_search')">Text-Search</div>
-				<!-- id = v | class => search_tab -->
-				<div id="value_search" class="search_tab" onclick="opensearchform('value_search')">Value-Search</div>
-				<!-- id = value_search | class => search_tab -->
-				<div id="waldow_search" class="search_tab" onclick="opensearchform('waldow_search')">Where-is-Waldow</div>
+				<!-- id = text_search | class => search_tab -->
+				<div id="waldow_search" class="search_tab hidden" onclick="opensearchform('waldow_search')">Where-is-Waldow</div>
 				<!-- id = waldow_search | class => search_tab -->
 
 				<div id="css_toggle" onclick="toggle_dark_mode()"><span class="material-symbols-outlined icon-ModeSwitch"></span></div>
@@ -89,12 +90,30 @@
 			<div class="search_forms">
 				<div id="form_asset_search" class="search_form" style="display: block">
 					<form id="search-form">
-						<input type="hidden" name="searchFile" value="assets.xml.gz">
-						<input type="hidden" name="parentTag" value="Asset">
-						<input type="hidden" name="searchTag" value='["Name","GUID","Template"]'>
-						<input type="text" name="searchString" placeholder="GUID or some string for asset or template name">
-						<label><input type="checkbox" name="nonstrict">Non-strikt</label>
-						<button class="material-symbols-outlined btn" id="your-id">search</button>
+						<div id="asset_search_form_elements">
+							<div>
+								<input type="hidden" name="searchFile" value="assets.xml.gz">
+								<input type="hidden" name="parentTag" value="Asset">
+								<input type="hidden" name="searchTag" value='["Name","GUID","Template"]'>
+								<input type="text" name="searchString" placeholder="GUID or some string for asset or template name">
+							</div>
+							<div><label><input type="checkbox" name="nonstrict" checked>Non-strikt</label></div>
+							<div id="container_expert_mode" onclick="toggleExpertMode()">
+								<div>Expert-Mode</div>
+								<div>
+									<span id="icon_expert_search" class="material-symbols-outlined">settings_b_roll</span>
+								</div>
+							</div>
+							<div id="expert_form_fields" style="display: none">
+								<div>
+									<input type="text" name="searchString" placeholder="Property Name (optional)">
+								</div>
+								<div>
+									<input type="text" name="searchString" placeholder="Value (optional)">
+								</div>
+							</div>
+							<div><button class="material-symbols-outlined btn" id="your-id">search</button></div>
+						</div>
 					</form>
 				</div><!-- id => form_asset_search | class => search_form -->
 				<div id="form_text_search" class="search_form">
@@ -120,14 +139,7 @@
 						<button class="material-symbols-outlined btn" id="your-id">search</button>
 					</form>
 				</div><!-- id => form_text_search | class => search_form -->
-				<div id="form_value_search" class="search_form">
-					<form id="search-form">
-						<input type="text" name="input_value_search_val" placeholder="Value">
-						<input type="text" name="input_value_search_prop" placeholder="property (optional)">
-						<button class="material-symbols-outlined" id="your-id">search</button>
-					</form>
-				</div><!-- id => form_value_search | class => search_form -->
-				<div id="form_waldow_search" class="search_form"></div><!-- id => form_waldow_search | class => search_form -->
+				<div id="form_waldow_search" class="hidden search_form"></div><!-- id => form_waldow_search | class => search_form -->
 
 			</div><!-- id => search_forms -->
 		</div><!-- id => searchbar -->
@@ -140,70 +152,62 @@
 		<!------------------------------------------------->
 
 		<div id="result_list">
-
-			<table id="table_result_list">
-				<!-- Optional: Spaltennamen -->
-				<tr>
-					<th>GUID</th>
-					<th>Text</th>
-					<th>LINK</th>
-				</tr>
-				<tr>
-					<td>1010217</td>
-					<td>Canned Food</td>
-					<td><button class="material-symbols-outlined btn">search</button></td>
-				</tr>
-				<tr>
-					<td>500008</td>
-					<td><span>Canned Food</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>10075</td>
-					<td><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>3428</td>
-					<td><span>CORNUCOPIA OF CANNED FOOD!</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>10075</td>
-					<td><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>3428</td>
-					<td><span>CORNUCOPIA OF CANNED FOOD!</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>10075</td>
-					<td><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>3428</td>
-					<td><span>CORNUCOPIA OF CANNED FOOD!</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>10075</td>
-					<td><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>3428</td>
-					<td><span>CORNUCOPIA OF CANNED FOOD!</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-				<tr>
-					<td>3390</td>
-					<td><span>CANNED FOOD SHORTAGE!</span></td>
-					<td><button class="btn material-symbols-outlined">search</button></td>
-				</tr>
-			</table><!-- id => table_result_list -->
+			<div id="result_list_head">
+				<!-- head -->
+				<div>GUID</div>
+				<div>Text</div>
+				<div>Link</div>
+			</div>
+			<div id="result_list_target">
+				<div data-id="1" class="result_list_row">
+					<!-- line -->
+					<div>2147483647</div>
+					<div>Canned Food</div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+				<div class="result_list_row">
+					<!-- line -->
+					<div>10075</div>
+					<div>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+				<div class="result_list_row">
+					<!-- line -->
+					<div>10075</div>
+					<div><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+				<div class="result_list_row">
+					<!-- line -->
+					<div>10075</div>
+					<div><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+				<div class="result_list_row">
+					<!-- line -->
+					<div>10075</div>
+					<div><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+				<div class="result_list_row">
+					<!-- line -->
+					<div>10075</div>
+					<div><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+				<div class="result_list_row">
+					<!-- line -->
+					<div>10075</div>
+					<div><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+				<div class="result_list_row">
+					<!-- line -->
+					<div>10075</div>
+					<div><span>Have 10t of Bread, Fish, Beer, Schnapps and Canned Food in stock.</span></div>
+					<div><button class="material-symbols-outlined btn">search</button></div>
+				</div>
+			</div>
 
 		</div><!-- id => result_list -->
 
@@ -217,7 +221,7 @@
 
 			<div id="detail_view">
 				<div id="detail_view_tab_bar">
-					<div id="detail_data_tab" class="detail_tab active_detail_tab" onclick="opendetails('detail_data')">Data</div>
+					<div id="detail_data_tab" class="detail_tab active_detail_tab" onclick="opendetails('detail_data')">DATA</div>
 					<div id="detail_xml_tab" class="detail_tab" onclick="opendetails('detail_xml')">XML</div>
 					<div id="detail_img_tab" class="detail_tab" onclick="opendetails('detail_img')">3D</div>
 				</div>
@@ -229,7 +233,134 @@
 
 
 
-				<div id="detail_data" style="display: block">sample data</div><!-- id => detail_data -->
+				<div id="detail_data" style="display: block">
+					<div id="detail_head">
+						<div>
+							<div><h2>Asset: <span id="details_name_asset">Name</span></h2></div>
+							<div><h4>Template: <span id="details_name_template">Name</span></h4></div>
+						</div>
+						<div><img id="details_icon" src="icos/main/3dicons/icon_beams_0.png" alt="Icon" title="Icon"></div>
+					</div>
+					<div>
+						<h4>Values:</h4>
+						<div id="details_values">
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings/RotatingCameraViewSpeed</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+							<div>
+								<div>Values/CameraSettings</div>
+								<div>data/ui/2kimages/main/3dicons/icon_camera.png</div>
+							</div>
+						</div>
+					</div>
+				</div><!-- id => detail_data -->
+
+
 				<div id="detail_xml">sample xml</div><!-- id => detail_xml -->
 				<div id="detail_img">sample img</div><!-- id => detail_img -->
 			</div><!-- id => detail_destination -->
@@ -241,7 +372,7 @@
 
 
 
-	<script src="search.js"></script>
+	<script type="module" src="scripts/_main.js"></script>
 </body>
 
 </html>
